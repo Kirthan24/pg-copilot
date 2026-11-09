@@ -1,0 +1,698 @@
+{
+  "summary": {
+    "total_unused_indexes": 4,
+    "total_stale_stats_candidates": 0,
+    "total_vacuum_bloat_candidates": 4,
+    "total_missing_index_candidates": 15
+  },
+  "collected_at": "2026-11-08T07:36:24Z",
+  "unused_indexes": [
+    {
+      "schemaname": "public",
+      "table_name": "client_session_archive",
+      "index_name": "idx_client_session_fts",
+      "idx_scan": 0,
+      "index_size_bytes": 398893056,
+      "index_size_pretty": "380 MB",
+      "index_def": "CREATE INDEX idx_client_session_fts ON public.client_session_archive USING gin (fts_document_vector)"
+    },
+    {
+      "schemaname": "public",
+      "table_name": "shared_resource_access",
+      "index_name": "idx_shared_resource_scope_lookup",
+      "idx_scan": 0,
+      "index_size_bytes": 26640384,
+      "index_size_pretty": "25 MB",
+      "index_def": "CREATE INDEX idx_shared_resource_scope_lookup ON public.shared_resource_access USING btree (tenant_id, recipient_principal_id, timestamp_created DESC, resource_uuid) WHERE (is_archived = false)"
+    },
+    {
+      "schemaname": "public",
+      "table_name": "attachment_blob_metadata",
+      "index_name": "idx_attachment_blob_content_search",
+      "idx_scan": 0,
+      "index_size_bytes": 9740288,
+      "index_size_pretty": "9512 kB",
+      "index_def": "CREATE INDEX idx_attachment_blob_content_search ON public.attachment_blob_metadata USING gin (fts_document_vector) WHERE (((metadata_category)::text = 'summary_digest'::text) AND (is_archived = false))"
+    },
+    {
+      "schemaname": "public",
+      "table_name": "task_audit_log_archive",
+      "index_name": "idx_task_audit_fts",
+      "idx_scan": 0,
+      "index_size_bytes": 1048576,
+      "index_size_pretty": "1024 kB",
+      "index_def": "CREATE INDEX idx_task_audit_fts ON public.task_audit_log_archive USING gin (fts_document_vector)"
+    }
+  ],
+  "stale_stats_candidates": [],
+  "vacuum_bloat_candidates": [
+    {
+      "schemaname": "public",
+      "relname": "client_session_archive",
+      "n_live_tup": 3571891,
+      "n_dead_tup": 268528,
+      "dead_tup_ratio": 6.99,
+      "total_table_size": "14 GB",
+      "last_vacuum": "2025-09-03T10:46:26.534971+00:00",
+      "last_autovacuum": "2025-09-02T20:30:36.077765+00:00"
+    },
+    {
+      "schemaname": "public",
+      "relname": "worker_execution_audit",
+      "n_live_tup": 2764352,
+      "n_dead_tup": 216086,
+      "dead_tup_ratio": 7.25,
+      "total_table_size": "598 MB",
+      "last_vacuum": "2025-09-03T10:51:55.439879+00:00",
+      "last_autovacuum": "2026-11-02T13:01:15.632069+00:00"
+    },
+    {
+      "schemaname": "public",
+      "relname": "billing_collaterals_archive",
+      "n_live_tup": 362902,
+      "n_dead_tup": 27128,
+      "dead_tup_ratio": 6.96,
+      "total_table_size": "296 MB",
+      "last_vacuum": "2025-09-03T10:45:39.064758+00:00",
+      "last_autovacuum": "2025-08-23T09:05:51.067903+00:00"
+    },
+    {
+      "schemaname": "public",
+      "relname": "worker_runtime_instance",
+      "n_live_tup": 180033,
+      "n_dead_tup": 15557,
+      "dead_tup_ratio": 7.95,
+      "total_table_size": "957 MB",
+      "last_vacuum": "2025-09-03T10:51:55.979852+00:00",
+      "last_autovacuum": "2026-10-30T14:59:30.591276+00:00"
+    }
+  ],
+  "missing_index_candidates": [
+    {
+      "schemaname": "public",
+      "relname": "order_item_details",
+      "seq_scan": 18972738,
+      "seq_tup_read": 8759854243617,
+      "idx_scan": 2543436394,
+      "avg_tup_per_seq_scan": 461707.44,
+      "n_live_tup": 2477475,
+      "heap_size_pretty": "1272 MB",
+      "existing_indexed_columns": [
+        "id",
+        "parent_order_uuid"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "category_cluster_uuid",
+          "data_type": "uuid",
+          "n_distinct": 54882,
+          "null_pct": 79.08
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -0.95800185,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "batch_processing_start",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 16410,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "customer_activity_log",
+      "seq_scan": 934988,
+      "seq_tup_read": 2304250757338,
+      "idx_scan": 1114836478,
+      "avg_tup_per_seq_scan": 2464470.94,
+      "n_live_tup": 6242238,
+      "heap_size_pretty": "1167 MB",
+      "existing_indexed_columns": [
+        "tenant_id",
+        "event_uuid"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "primary_org_uuid",
+          "data_type": "uuid",
+          "n_distinct": 5243,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "division_unit_uuid",
+          "data_type": "uuid",
+          "n_distinct": 5243,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "billing_reference_uuid",
+          "data_type": "uuid",
+          "n_distinct": 0,
+          "null_pct": 100.0
+        },
+        {
+          "column_name": "crm_lead_external_uuid",
+          "data_type": "uuid",
+          "n_distinct": 0,
+          "null_pct": 100.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "client_session_archive",
+      "seq_scan": 21174002,
+      "seq_tup_read": 1800551123367,
+      "idx_scan": 477526233,
+      "avg_tup_per_seq_scan": 85035.94,
+      "n_live_tup": 3571891,
+      "heap_size_pretty": "5229 MB",
+      "existing_indexed_columns": [
+        "id",
+        "fts_document_vector",
+        "principal_id"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "session_external_token",
+          "data_type": "character varying",
+          "n_distinct": -0.10568534,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "schedule_stream_code",
+          "data_type": "character varying",
+          "n_distinct": 2971,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "ui_theme_marker",
+          "data_type": "character varying",
+          "n_distinct": 0,
+          "null_pct": 100.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "session_metrics_archive",
+      "seq_scan": 2686785,
+      "seq_tup_read": 766266107847,
+      "idx_scan": 179572,
+      "avg_tup_per_seq_scan": 285198.15,
+      "n_live_tup": 524183,
+      "heap_size_pretty": "106 MB",
+      "existing_indexed_columns": [
+        "id"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "session_external_token",
+          "data_type": "character varying",
+          "n_distinct": 48576,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "principal_id",
+          "data_type": "character varying",
+          "n_distinct": 1687,
+          "null_pct": 51.93
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -0.9808488,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -0.9808488,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "workflow_action_schedule",
+      "seq_scan": 2485171,
+      "seq_tup_read": 722093444492,
+      "idx_scan": 3104906,
+      "avg_tup_per_seq_scan": 290560.87,
+      "n_live_tup": 1019855,
+      "heap_size_pretty": "457 MB",
+      "existing_indexed_columns": [
+        "tenant_id",
+        "id"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "primary_org_uuid",
+          "data_type": "uuid",
+          "n_distinct": 2,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "job_definition_uuid",
+          "data_type": "uuid",
+          "n_distinct": 59297,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "document_manifest_uuid",
+          "data_type": "uuid",
+          "n_distinct": 37037,
+          "null_pct": 28.73
+        },
+        {
+          "column_name": "customer_org_uuid",
+          "data_type": "uuid",
+          "n_distinct": 1017,
+          "null_pct": 63.83
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "worker_runtime_instance",
+      "seq_scan": 12357661,
+      "seq_tup_read": 555160225096,
+      "idx_scan": 5297140,
+      "avg_tup_per_seq_scan": 44924.38,
+      "n_live_tup": 180033,
+      "heap_size_pretty": "263 MB",
+      "existing_indexed_columns": [
+        "worker_cluster_id",
+        "job_definition_uuid"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "upstream_source_correlation_id",
+          "data_type": "character varying",
+          "n_distinct": -0.7911305,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "scheduled_dispatch_timestamp",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "user_account_profile",
+      "seq_scan": 2282878,
+      "seq_tup_read": 258750165941,
+      "idx_scan": 1174968141,
+      "avg_tup_per_seq_scan": 113343.84,
+      "n_live_tup": 200508,
+      "heap_size_pretty": "25 MB",
+      "existing_indexed_columns": [
+        "id",
+        "primary_contact_email"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -0.2648056,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -0.2648056,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "given_name",
+          "data_type": "character varying",
+          "n_distinct": -0.16427682,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "family_name",
+          "data_type": "character varying",
+          "n_distinct": -0.12590979,
+          "null_pct": 36.94
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "organization_membership_mapping",
+      "seq_scan": 1874824,
+      "seq_tup_read": 158555393943,
+      "idx_scan": 23270470519,
+      "avg_tup_per_seq_scan": 84570.82,
+      "n_live_tup": 201140,
+      "heap_size_pretty": "388 MB",
+      "existing_indexed_columns": [
+        "tenant_id",
+        "user_email_alias",
+        "id",
+        "supervisor_member_uuid",
+        "primary_org_uuid",
+        "tenant_alias_slug"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "member_principal_uuid",
+          "data_type": "uuid",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "iam_auth_identity_ref",
+          "data_type": "character varying",
+          "n_distinct": -0.023400009,
+          "null_pct": 97.66
+        },
+        {
+          "column_name": "security_role_tier_code",
+          "data_type": "character varying",
+          "n_distinct": 2,
+          "null_pct": 97.76
+        },
+        {
+          "column_name": "billing_reference_uuid",
+          "data_type": "uuid",
+          "n_distinct": 0,
+          "null_pct": 100.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "core_transaction_event",
+      "seq_scan": 123779,
+      "seq_tup_read": 124632713503,
+      "idx_scan": 71806181726,
+      "avg_tup_per_seq_scan": 1006897.08,
+      "n_live_tup": 4138159,
+      "heap_size_pretty": "6057 MB",
+      "existing_indexed_columns": [
+        "tenant_id",
+        "upstream_source_correlation_id",
+        "id",
+        "fts_document_vector"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "transaction_category_code",
+          "data_type": "uuid",
+          "n_distinct": 1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "gateway_provider_id",
+          "data_type": "uuid",
+          "n_distinct": 1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "batch_run_correlation_id",
+          "data_type": "character varying",
+          "n_distinct": 35904,
+          "null_pct": 31.48
+        },
+        {
+          "column_name": "worker_runtime_uuid",
+          "data_type": "uuid",
+          "n_distinct": -0.039966643,
+          "null_pct": 96.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "integration_sync_audit_archive",
+      "seq_scan": 1243838,
+      "seq_tup_read": 87535508759,
+      "idx_scan": 1005,
+      "avg_tup_per_seq_scan": 70375.33,
+      "n_live_tup": 387070,
+      "heap_size_pretty": "318 MB",
+      "existing_indexed_columns": [
+        "id"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "principal_id",
+          "data_type": "character varying",
+          "n_distinct": 3100,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "schedule_stream_code",
+          "data_type": "character varying",
+          "n_distinct": 3100,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "ledger_effective_date",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 600,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "attachment_blob_metadata",
+      "seq_scan": 189049,
+      "seq_tup_read": 47074070892,
+      "idx_scan": 76862276,
+      "avg_tup_per_seq_scan": 249004.6,
+      "n_live_tup": 1280131,
+      "heap_size_pretty": "795 MB",
+      "existing_indexed_columns": [
+        "id",
+        "parent_order_uuid",
+        "fts_document_vector"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "document_manifest_uuid",
+          "data_type": "uuid",
+          "n_distinct": 85679,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 112125,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 112125,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "ingestion_channel_type",
+          "data_type": "character varying",
+          "n_distinct": 2,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "customer_tag_categorization",
+      "seq_scan": 37522,
+      "seq_tup_read": 13763570376,
+      "idx_scan": 280160581,
+      "avg_tup_per_seq_scan": 366813.35,
+      "n_live_tup": 2267774,
+      "heap_size_pretty": "362 MB",
+      "existing_indexed_columns": [
+        "id",
+        "parent_order_uuid"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "upstream_source_correlation_id",
+          "data_type": "character varying",
+          "n_distinct": -1,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 2544,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 2544,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "export_format_tag",
+          "data_type": "character varying",
+          "n_distinct": 3,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "session_participant_cache",
+      "seq_scan": 166636,
+      "seq_tup_read": 5994466782,
+      "idx_scan": 467239779,
+      "avg_tup_per_seq_scan": 35973.42,
+      "n_live_tup": 2114081,
+      "heap_size_pretty": "1080 MB",
+      "existing_indexed_columns": [
+        "id",
+        "processing_job_id"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "session_external_token",
+          "data_type": "character varying",
+          "n_distinct": 50056,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_created",
+          "data_type": "timestamp without time zone",
+          "n_distinct": 15304,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp without time zone",
+          "n_distinct": 15304,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "primary_contact_email",
+          "data_type": "character varying",
+          "n_distinct": 3101,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "calendar_events_archive",
+      "seq_scan": 7811,
+      "seq_tup_read": 3323237665,
+      "idx_scan": 153287859,
+      "avg_tup_per_seq_scan": 425456.11,
+      "n_live_tup": 1755563,
+      "heap_size_pretty": "387 MB",
+      "existing_indexed_columns": [
+        "session_external_token"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "batch_run_correlation_id",
+          "data_type": "character varying",
+          "n_distinct": 27624,
+          "null_pct": 31.88
+        },
+        {
+          "column_name": "secondary_external_id",
+          "data_type": "character varying",
+          "n_distinct": 20027,
+          "null_pct": 75.23
+        },
+        {
+          "column_name": "worker_runtime_id",
+          "data_type": "character varying",
+          "n_distinct": -0.0015000105,
+          "null_pct": 99.85
+        },
+        {
+          "column_name": "timestamp_recorded",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 49677,
+          "null_pct": 0.0
+        }
+      ]
+    },
+    {
+      "schemaname": "public",
+      "relname": "enterprise_membership_ledger",
+      "seq_scan": 2616042,
+      "seq_tup_read": 3047560878,
+      "idx_scan": 2495756371,
+      "avg_tup_per_seq_scan": 1164.95,
+      "n_live_tup": 17506747,
+      "heap_size_pretty": "22 GB",
+      "existing_indexed_columns": [
+        "id",
+        "parent_order_uuid",
+        "membership_mapping_id"
+      ],
+      "candidate_columns": [
+        {
+          "column_name": "primary_org_uuid",
+          "data_type": "uuid",
+          "n_distinct": 3183,
+          "null_pct": 0.0
+        },
+        {
+          "column_name": "division_unit_uuid",
+          "data_type": "uuid",
+          "n_distinct": 2468,
+          "null_pct": 64.81
+        },
+        {
+          "column_name": "billing_reference_uuid",
+          "data_type": "uuid",
+          "n_distinct": 0,
+          "null_pct": 100.0
+        },
+        {
+          "column_name": "timestamp_updated",
+          "data_type": "timestamp with time zone",
+          "n_distinct": 1524590,
+          "null_pct": 0.0
+        }
+      ]
+    }
+  ]
+}

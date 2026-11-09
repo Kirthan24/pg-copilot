@@ -1,0 +1,95 @@
+# ==============================================================================
+# Environment & Secrets (Never commit credentials, DB passwords, or API keys)
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+
+# ==============================================================================
+# Node.js & React Frontend (Vite)
+# ==============================================================================
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==============================================================================
+# Production Telemetry Dumps & Snapshots (Air-Gapped Raw Data)
+# ==============================================================================
+tele.json
+tele_2.json
+telemetry.json
+telemetry_snapshot.json
+snapshot*.json
+!sample_telemetry.json
+!frontend/public/sample_telemetry.json
+
+# ==============================================================================
+# Operating System & IDE Artifacts
+# ==============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
