@@ -12,6 +12,20 @@
 
 ---
 
+## 📸 Interface & Live Dashboard
+
+### 1. Executive Health Score & Grounded AI Findings
+*Real-time PostgreSQL cluster health score, severity-graded performance findings (Bloat, Missing Indexes, Redundant Indexes, Stale Optimizer Stats), root-cause analysis, and non-blocking SQL remediation.*
+
+![Dashboard Overview](docs/assets/dashboard_overview.png)
+
+### 2. Deep Catalog Telemetry Explorer
+*Granular breakdown of system catalog internals: MVCC dead tuple ratios, sequential scan load, write-amplifying unused indexes, and column cardinality metrics.*
+
+![Catalog Telemetry Explorer](docs/assets/catalogue_telemetry.png)
+
+---
+
 ## 🎯 The Problem
 
 In high-throughput OLTP PostgreSQL systems, performance degradations often compound invisibly within system catalogs long before surfacing as user-facing latency anomalies:
@@ -221,6 +235,8 @@ pg-copilot/
 ├── sample_telemetry.json           # Scrubbed SaaS production catalog telemetry dataset
 ├── requirements.txt                # Core Python dependencies (FastAPI, uvicorn, pydantic, etc.)
 ├── .env.example                    # Configuration template
+├── docs/
+│   └── assets/                     # Dashboard overview and catalog telemetry screenshots
 ├── kb/
 │   └── postgres_grounding.md       # DBRE grounding knowledge base (MVCC, locks, scale factors)
 ├── api/
