@@ -1,7 +1,10 @@
-# 🐘 pg-copilot: AI-Native PostgreSQL Health, Index & Vacuum Advisor
+# pg-copilot: AI-Native PostgreSQL Health, Index & Vacuum Advisor
 
 > **Production-Safe, Read-Only PostgreSQL Catalog Observability & AI-Driven Remediation**
+>
+> 🚀 **Live Demo:** [https://pg-copilot-silk.vercel.app](https://pg-copilot-silk.vercel.app)
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-pg--copilot--silk.vercel.app-000000.svg?logo=vercel&logoColor=white)](https://pg-copilot-silk.vercel.app)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com)
 [![React 18 + Vite](https://img.shields.io/badge/React-18_Vite_Tailwind-61DAFB.svg)](https://vitejs.dev/)
@@ -171,12 +174,102 @@ Open **`http://localhost:5173`** in your browser.
 
 ---
 
-## 🌐 Instant Cloud Demo (Vercel Ready)
+## 🌐 Live Interactive Cloud Demo
 
-`pg-copilot` includes an interactive pre-packaged SaaS database snapshot ([`sample_telemetry.json`](sample_telemetry.json)) and pre-computed diagnostic report ([`sample_report.json`](frontend/src/data/sample_report.json)).
+Experience `pg-copilot` in action directly in your browser with zero setup:
 
-- When deployed to **Vercel** or opened without a local Docker container running, the frontend automatically renders the interactive demo snapshot in **<50ms**.
-- Users can click **"Load Demo Sandbox Snapshot"** to inspect 23 realistic performance findings across bloated tables (`order_item_details`), unused full-text search indexes (`client_session_archive`), and missing composite index candidates.
+👉 **[https://pg-copilot-silk.vercel.app](https://pg-copilot-silk.vercel.app)**
+
+- **Instant Zero-Config Sandbox**: Automatically renders an interactive scrubbed SaaS cluster snapshot ([`sample_telemetry.json`](sample_telemetry.json)) and pre-computed diagnostic report ([`sample_report.json`](frontend/src/data/sample_report.json)) in **<50ms**.
+- **Interactive DBRE Workspace**: Click **"Load Demo Sandbox Snapshot"** to inspect 23 realistic performance findings across bloated tables (`order_item_details`), write-amplifying unused indexes (`client_session_archive`), sequential scan churn, and consolidated non-blocking remediation scripts.
+- **Client-Side Air-Gapped Mode**: Upload any offline catalog telemetry JSON directly in the browser to analyze external PostgreSQL clusters without opening network ports.
+
+<details>
+<summary><b>🔍 How to Export Your Own <code>telemetry.json</code> for Air-Gapped Analysis</b></summary>
+<br>
+
+Run this read-only catalog aggregation query directly in `psql`, pgAdmin, or DBeaver against your PostgreSQL database to generate an air-gapped snapshot compatible with the cloud demo:
+
+```sql
+SELECT json_build_object(
+    'collected_at', now()::text,
+    'unused_indexes', (
+        SELECT COALESCE(json_agg(t), '[]'::json) FROM (
+            SELECT
+                sui.schemaname,
+                sui.relname AS table_name,
+                sui.indexrelname AS index_name,
+                sui.idx_scan,
+                pg_relation_size(sui.indexrelid) AS index_size_bytes,
+                pg_size_pretty(pg_relation_size(sui.indexrelid)) AS index_size_pretty
+            FROM pg_stat_user_indexes sui
+            JOIN pg_index i ON sui.indexrelid = i.indexrelid
+            WHERE sui.idx_scan = 0
+              AND i.indisunique IS FALSE
+              AND i.indisprimary IS FALSE
+            ORDER BY index_size_bytes DESC
+        ) t
+    ),
+    'vacuum_bloat_candidates', (
+        SELECT COALESCE(json_agg(t), '[]'::json) FROM (
+            SELECT
+                schemaname,
+                relname,
+                n_live_tup,
+                n_dead_tup,
+                round(100.0 * n_dead_tup / NULLIF(n_live_tup + n_dead_tup, 0), 2)::float AS dead_tup_ratio,
+                last_vacuum::text,
+                last_autovacuum::text
+            FROM pg_stat_user_tables
+            WHERE n_dead_tup > 5000
+              AND (100.0 * n_dead_tup / NULLIF(n_live_tup + n_dead_tup, 0)) > 5.0
+            ORDER BY dead_tup_ratio DESC
+        ) t
+    ),
+    'missing_index_candidates', (
+        SELECT COALESCE(json_agg(t), '[]'::json) FROM (
+            SELECT
+                schemaname,
+                relname,
+                seq_scan,
+                seq_tup_read,
+                idx_scan,
+                n_live_tup,
+                round(100.0 * seq_scan / NULLIF(seq_scan + COALESCE(idx_scan, 0), 0), 2)::float AS seq_scan_ratio
+            FROM pg_stat_user_tables
+            WHERE seq_scan > 20
+              AND n_live_tup > 10000
+              AND seq_tup_read > 100000
+            ORDER BY seq_tup_read DESC
+        ) t
+    ),
+    'stale_stats_candidates', (
+        SELECT COALESCE(json_agg(t), '[]'::json) FROM (
+            SELECT
+                schemaname,
+                relname,
+                n_live_tup,
+                n_mod_since_analyze,
+                round(100.0 * n_mod_since_analyze / NULLIF(n_live_tup, 0), 2)::float AS mod_ratio,
+                last_analyze::text,
+                last_autoanalyze::text
+            FROM pg_stat_user_tables
+            WHERE n_mod_since_analyze > 10000
+              AND (100.0 * n_mod_since_analyze / NULLIF(n_live_tup, 0)) > 10.0
+            ORDER BY mod_ratio DESC
+        ) t
+    )
+);
+```
+
+Or export directly to a file from your terminal:
+
+```bash
+psql "$DATABASE_URL" -t -A -q -c "SELECT json_build_object('collected_at', now()::text, ...);" > telemetry.json
+```
+
+Then drop `telemetry.json` into the upload zone at [pg-copilot-silk.vercel.app](https://pg-copilot-silk.vercel.app).
+</details>
 
 ---
 
